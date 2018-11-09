@@ -1,9 +1,13 @@
 self.addEventListener('install', (event) => {
     console.log('service-worker installing');
 
-    event.waitUntil(caches.open('static-v1').then((cache) => {
-        cache.add('/waht');
-    }));
+    event.waitUntil(caches.open('cache_name').then(cache => cache.addAll([
+        'assets/img/1.jpg',
+        'assets/img/2.jpg',
+        'assets/img/3.jpg',
+        'assets/img/4.png',
+        'assets/img/5.jpg'
+    ])));
 })
 
 self.addEventListener('activate', event => {
@@ -12,5 +16,10 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     var url = new URL(event.request.url);
-    console.log(url);
+
+    if (url.pathname.indexOf('.jpg') !== -1 || url.pathname.indexOf('.png') !== -1) {
+        // event.respondWith(caches.match(url.pathname));
+        console.log(url.pathname);
+        event.respondWith(caches.match('/assets/img/4.png'));
+    }
 });

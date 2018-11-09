@@ -25,4 +25,5 @@ function serviceWorker() {
         });
 }
 
+// webWorker();
 serviceWorker();
