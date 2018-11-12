@@ -21,6 +21,7 @@ self.addEventListener('fetch', event => {
             });
         }
     }).catch((error) => {
-        console.log(error);
+        console.error('發生其他錯誤啦');
+        console.error(error);
     }) );
 });
