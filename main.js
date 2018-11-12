@@ -22,7 +22,7 @@ function serviceWorker() {
     }
     navigator.serviceWorker.register('./service-worker.js')
         .then(() => {
-            console.log('then then then');
+            console.log('load service-worker success!!!!');
         })
         .catch(() => {
             console.log('catch catch catch');

@@ -1,14 +1,6 @@
 self.addEventListener('install', (event) => {
     console.log('service-worker installing');
-
-    event.waitUntil(caches.open('cache_name').then(cache => cache.addAll([
-        'assets/img/1.jpg',
-        'assets/img/2.jpg',
-        'assets/img/3.jpg',
-        'assets/img/4.png',
-        'assets/img/5.jpg',
-        '/'
-    ])));
+    event.waitUntil(caches.open('v1').then(cache => cache.addAll([])));
 })
 
 self.addEventListener('activate', event => {
@@ -16,15 +8,19 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    var url = new URL(event.request.url);
-    console.log(url.pathname);
+    console.log(`handling fetch event for ${event.request.url}`);
 
-    if (url.pathname.indexOf('.jpg') !== -1 || url.pathname.indexOf('.png') !== -1) {
-        // event.respondWith(caches.match(url.pathname));
-        console.log(url.pathname);
-        event.respondWith(caches.match('/assets/img/4.png'));
-    }
-    if (url.pathname === '/') {
-        console.log('now loading root path');
-    }
+    event.respondWith( caches.match(event.request).then((response) => {
+        if (response) {
+            console.log('曾經被快取存過!');
+            return response;
+        } else {
+            console.log('沒有在快取裡面!');
+            return fetch(event.request).then((response) => {
+                return response
+            });
+        }
+    }).catch((error) => {
+        console.log(error);
+    }) );
 });
