@@ -10,7 +10,6 @@ self.addEventListener('install', (event) => {
         }));
 })
 
-
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -29,10 +28,8 @@ self.addEventListener('activate', event => {
     );
 });
 
-
 self.addEventListener('fetch', event => {
     console.log(`handling fetch event for ${event.request.url}`);
-    return;
 
     event.respondWith(caches.match(event.request).then((response) => {
         if (response) {
