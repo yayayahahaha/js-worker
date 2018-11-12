@@ -16,6 +16,10 @@ function webWorker() {
  service worker testing
  **********************/
 function serviceWorker() {
+    if (!navigator || !navigator.serviceWorker) {
+        console.warn('this browser doesn\'t support service-worker');
+        return;
+    }
     navigator.serviceWorker.register('./service-worker.js')
         .then(() => {
             console.log('then then then');

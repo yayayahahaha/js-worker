@@ -6,7 +6,8 @@ self.addEventListener('install', (event) => {
         'assets/img/2.jpg',
         'assets/img/3.jpg',
         'assets/img/4.png',
-        'assets/img/5.jpg'
+        'assets/img/5.jpg',
+        '/'
     ])));
 })
 
@@ -16,10 +17,14 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     var url = new URL(event.request.url);
+    console.log(url.pathname);
 
     if (url.pathname.indexOf('.jpg') !== -1 || url.pathname.indexOf('.png') !== -1) {
         // event.respondWith(caches.match(url.pathname));
         console.log(url.pathname);
         event.respondWith(caches.match('/assets/img/4.png'));
+    }
+    if (url.pathname === '/') {
+        console.log('now loading root path');
     }
 });
