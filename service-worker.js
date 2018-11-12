@@ -1,6 +1,8 @@
+var cacheName = 'v1';
+
 self.addEventListener('install', (event) => {
     console.log('service-worker installing');
-    event.waitUntil(caches.open('v1').then(cache => cache.addAll([])));
+    event.waitUntil(caches.open(cacheName).then(cache => cache.addAll([])));
 })
 
 self.addEventListener('activate', event => {
@@ -17,7 +19,10 @@ self.addEventListener('fetch', event => {
         } else {
             console.log('沒有在快取裡面!');
             return fetch(event.request).then((response) => {
-                return response;
+                return caches.open(cacheName).then((cache) => {
+                    cache.put(event.request, response.clone());
+                    return response;
+                });
             });
         }
     }).catch((error) => {
