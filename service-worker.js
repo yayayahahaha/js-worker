@@ -17,7 +17,7 @@ self.addEventListener('fetch', event => {
         } else {
             console.log('沒有在快取裡面!');
             return fetch(event.request).then((response) => {
-                return response
+                return response;
             });
         }
     }).catch((error) => {
