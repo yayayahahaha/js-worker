@@ -2,7 +2,69 @@
  web worker testing
  ******************/
 
-function sayHi() {
+function serviceWorkerFunction() {
+    var self = this,
+        cacheList = ['v1', 'v2', 'v3', 'v4', 'v5'],
+        cacheName = 'v3';
+
+    self.addEventListener('install', (event) => {
+        console.log('service-worker installing');
+        event.waitUntil(
+            caches.open(cacheName)
+            .then(cache => {
+                cache.addAll([]);
+
+                // 防止等待?
+                skipWaiting();
+            }));
+    })
+
+    self.addEventListener('activate', event => {
+        console.log('現在service-worker activate 了');
+
+        event.waitUntil(
+            caches.keys().then((cacheNames) => {
+                console.log('cache 的名字們');
+                console.log(cacheNames);
+
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        console.log('in map!!');
+                        if (cacheList.indexOf(cacheName) === -1) {
+                            console.log(`${ cacheList.indexOf(cacheName) }`);
+                            console.log(`${ cacheName } will be remove`);
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            })
+        );
+    });
+
+    self.addEventListener('fetch', event => {
+        console.log(`handling fetch event for ${event.request.url}`);
+
+        event.respondWith(caches.match(event.request).then((response) => {
+            if (response) {
+                console.log(cacheName + '曾經被快取存過!');
+                return response;
+            } else {
+                console.log(cacheName + '沒有在快取裡面!');
+                return fetch(event.request).then((response) => {
+                    return caches.open(cacheName).then((cache) => {
+                        cache.put(event.request, response.clone());
+                        return response;
+                    });
+                });
+            }
+        }).catch((error) => {
+            console.error('發生其他錯誤啦');
+            console.error(error);
+        }));
+    });
+}
+
+function webWorkerFunciton() {
     var worker = this;
 
     worker.onmessage = function(e) {
@@ -30,7 +92,7 @@ function webWorker() {
     // 一般的靜態檔寫法
     // var hardWorker = new Worker('./web-worker.js');
     // 動態的function 寫法
-    var hardWorker = run(sayHi);
+    var hardWorker = run(webWorkerFunciton);
 
     hardWorker.postMessage('hi, there');
     hardWorker.onmessage = function(e) {
