@@ -1,5 +1,5 @@
-var cacheList = ['v1'],
-    cacheName = 'v1';
+var cacheList = ['v1', 'v2', 'v3', 'v4', 'v5'],
+    cacheName = 'v3';
 
 self.addEventListener('install', (event) => {
     console.log('service-worker installing');
@@ -7,10 +7,15 @@ self.addEventListener('install', (event) => {
         caches.open(cacheName)
         .then(cache => {
             cache.addAll([]);
+
+            // 防止等待?
+            skipWaiting();
         }));
 })
 
 self.addEventListener('activate', event => {
+    console.log('現在service-worker activate 了');
+
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             console.log('cache 的名字們');
@@ -20,6 +25,8 @@ self.addEventListener('activate', event => {
                 cacheNames.map((cacheName) => {
                     console.log('in map!!');
                     if (cacheList.indexOf(cacheName) === -1) {
+                        console.log(`${ cacheList.indexOf(cacheName) }`);
+                        console.log(`${ cacheName } will be remove`);
                         return caches.delete(cacheName);
                     }
                 })
