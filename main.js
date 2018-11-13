@@ -1,7 +1,18 @@
 /******************
  web worker testing
  ******************/
+
 function webWorker() {
+/*
+    // 用來測試thread 與否的差異檔
+    for (var i = 0; i < 1000000000; i++) {
+        if (i % 100000000 === 0) {
+            console.log(i);
+        }
+    }
+    return;
+*/
+
     // dedicated workder, 單一 workder
     var hardWorker = new Worker('./web-worker.js');
     hardWorker.postMessage('hi, there');
@@ -29,5 +40,5 @@ function serviceWorker() {
         });
 }
 
-// webWorker();
-serviceWorker();
+webWorker();
+// serviceWorker();
